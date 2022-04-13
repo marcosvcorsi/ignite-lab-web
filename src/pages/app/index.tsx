@@ -1,26 +1,32 @@
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
-import { useGetProductsQuery } from "../../graphql/generated/graphql";
+import {
+  useGetProductsQuery,
+  useMeQuery,
+} from "../../graphql/generated/graphql";
 import {
   getServerPageGetProducts,
   ssrGetProducts,
 } from "../../graphql/generated/page";
 import { withApollo } from "../../lib/withApollo";
 
-function Home() {
-  const { user } = useUser();
-  const { data, loading, error } = useGetProductsQuery();
+function Home({ data }) {
+  const { data: me } = useMeQuery();
 
-  console.log(user, data);
+  console.log(me);
 
-  return <h1>Hello World</h1>;
+  return (
+    <div className="text-violet-500">
+      <h1>Hello World</h1>
+    </div>
+  );
 }
 
 export const getServerSideProps = withPageAuthRequired({
   getServerSideProps: async (ctx) => {
-    const data = await getServerPageGetProducts(null, ctx);
+    // return getServerPageGetProducts({}, ctx);
 
     return {
-      props: data.props,
+      props: {},
     };
   },
 });
